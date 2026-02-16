@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTAIL FORMATION TPG</title>
+    <link rel="icon" type="image/png" href="Conduite.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root { --tpg-orange: #FD5312; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; }
+        
+        /* Modification de la police du titre */
+        .header-title { 
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            font-weight: 900; 
+            letter-spacing: -0.05em;
+        }
+
+        .nav-btn { transition: all 0.3s; border-bottom: 4px solid transparent; color: #666; font-weight: 600; }
+        .nav-btn.active { border-bottom: 4px solid var(--tpg-orange); color: var(--tpg-orange); background-color: #fff; }
+        
+        .preview-box { 
+            border: 3px solid var(--tpg-orange); 
+            padding: 30px; 
+            border-radius: 8px; 
+            background: white; 
+            line-height: 1.6; 
+            margin-top: 20px; 
+            color: #333; 
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+        
+        .preview-box b { color: #000; font-weight: 800; }
+
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white; padding: 0; }
+            .preview-box { border: 2px solid #FD5312 !important; width: 100%; box-shadow: none; } 
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-6xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden no-print mb-6">
+    <header class="bg-[#FD5312] p-6 text-white flex justify-between items-center">
+        <h1 class="text-3xl uppercase header-title">PORTAIL FORMATION TPG</h1>
+        <div class="text-right text-xs opacity-80 uppercase font-bold text-white">Gestion Technique</div>
+    </header>
+
+    <nav class="flex flex-wrap bg-gray-100 border-b overflow-x-auto">
+        <button onclick="showTab('cours')" id="btn-cours" class="nav-btn px-6 py-4 active text-sm">1. Organisation Cours</button>
+        <button onclick="showTab('rails')" id="btn-rails" class="nav-btn px-6 py-4 text-sm">2. Rails Glissants</button>
+        <button onclick="showTab('tram')" id="btn-tram" class="nav-btn px-6 py-4 text-sm">3. Réservation Tramway</button>
+        <button onclick="showTab('abtb')" id="btn-abtb" class="nav-btn px-6 py-4 text-sm">4. Réservation AB/TB</button>
+        <button onclick="showTab('vehicule')" id="btn-vehicule" class="nav-btn px-6 py-4 text-sm">5. Véhicule de Service</button>
+        <button onclick="showTab('avarie')" id="btn-avarie" class="nav-btn px-6 py-4 text-sm">6. Annonce Avarie</button>
+    </nav>
+</div>
+
+<div class="max-w-6xl mx-auto">
+    
+    <div id="tab-cours" class="tab-content">
+        <div class="bg-white p-6 rounded-lg shadow no-print border-t-4 border-t-orange-500">
+            <h2 class="text-xl font-bold mb-4 uppercase text-[#FD5312]">1. Organisation d'un cours</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <select id="c_cours" class="w-full border p-2 rounded" onchange="updAll()"><option value="Immersion RCT">Immersion RCT</option><option value="Cours 600">Cours 600</option></select>
+                <select id="c_form" class="w-full border p-2 rounded f-restricted" onchange="updAll()"></select>
+                <div class="flex gap-2 md:col-span-2"><input type="date" id="c_d1" class="border p-2 w-full" onchange="updAll()"><input type="date" id="c_d2" class="border p-2 w-full" onchange="updAll()"></div>
+            </div>
+            <textarea id="c_rem" class="w-full border p-2 rounded mt-4" placeholder="Remarques..." onkeyup="updAll()"></textarea>
+        </div>
+        <div class="preview-box" id="pre-cours"></div>
+        <div class="flex gap-2 mt-6 no-print">
+            <button onclick="resetAll()" class="bg-gray-500 text-white px-6 py-3 rounded font-bold uppercase text-sm">Vider</button>
+            <button onclick="window.print()" class="bg-blue-700 text-white px-6 py-3 rounded font-bold uppercase text-sm">Imprimer</button>
+            <button onclick="mailCours()" class="bg-[#FD5312] text-white px-6 py-3 rounded font-bold flex-1 uppercase">Générer le mail</button>
+        </div>
+    </div>
+
+    <div id="tab-rails" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-lg shadow no-print border-t-4 border-t-blue-900">
+            <h2 class="text-xl font-bold mb-4 uppercase text-[#FD5312]">2. Rails Glissants</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <select id="r_form" class="w-full border p-2 rounded f-restricted" onchange="updAll()"></select>
+                <input type="date" id="r_d1" class="border p-2 rounded" onchange="updAll()">
+                <input type="date" id="r_d2" class="border p-2 rounded" onchange="updAll()">
+            </div>
+            <textarea id="r_rem" class="w-full border p-2 rounded mt-4" placeholder="Remarques spécifiques..." onkeyup="updAll()"></textarea>
+        </div>
+        <div class="preview-box" id="pre-rails"></div>
+        <div class="flex gap-2 mt-6 no-print">
+            <button onclick="resetAll()" class="bg-gray-500 text-white px-6 py-3 rounded font-bold uppercase text-sm">Vider</button>
+            <button onclick="window.print()" class="bg-blue-700 text-white px-6 py-3 rounded font-bold uppercase text-sm">Imprimer</button>
+            <button onclick="mailRails()" class="bg-[#FD5312] text-white px-6 py-3 rounded font-bold flex-1 uppercase">Générer le mail</button>
+        </div>
+    </div>
+
+    <div id="tab-tram" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-lg shadow no-print border-t-4 border-t-emerald-600">
+            <h2 class="text-xl font-bold mb-4 uppercase text-[#FD5312]">3. Réservation Tramway</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <select id="t_depot" class="w-full border-2 border-orange-400 p-2 rounded font-bold" onchange="updAll()"><option value="">-- Dépôt --</option><option>En-Chardon</option><option>Bachet</option></select>
+                    <select id="t_f" class="w-full border p-2 rounded f-complete" onchange="updAll()"></select>
+                    <div class="flex gap-2"><input type="date" id="t_d1" class="border p-2 w-full" onchange="updAll()"><input type="date" id="t_d2" class="border p-2 w-full" onchange="updAll()"></div>
+                </div>
+                <div class="border p-3 rounded bg-gray-50 grid grid-cols-2 gap-1 text-[10px] md:text-xs">
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="Bombardier" onchange="updAll()"> Bombardier</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="Bombardier + Bombardier" onchange="updAll()"> Bombardier + Bombardier</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="Tango" onchange="updAll()"> Tango</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="Tango + Tango" onchange="updAll()"> Tango + Tango</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="DAV convoi" onchange="updAll()"> DAV convoi</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="DAV convoi + DAV convoi" onchange="updAll()"> DAV convoi + DAV convoi</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="DAV03" onchange="updAll()"> DAV03</label>
+                    <label class="flex items-center gap-1"><input type="checkbox" name="tv" value="DAV04" onchange="updAll()"> DAV04</label>
+                </div>
+            </div>
+        </div>
+        <div class="preview-box" id="pre-tram"></div>
+        <div class="flex gap-2 mt-6 no-print">
+            <button onclick="resetAll()" class="bg-gray-500 text-white px-6 py-3 rounded font-bold uppercase text-sm">Vider</button>
+            <button onclick="window.print()" class="bg-blue-700 text-white px-6 py-3 rounded font-bold uppercase text-sm">Imprimer</button>
+            <button onclick="mailTram()" class="bg-[#FD5312] text-white px-6 py-3 rounded font-bold flex-1 uppercase">Générer le mail</button>
+        </div>
+    </div>
+
+    <div id="tab-abtb" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-lg shadow no-print border-t-4 border-t-purple-600">
+            <h2 class="text-xl font-bold mb-4 uppercase text-[#FD5312]">4. Réservation AB/TB</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <select id="a_depot" class="w-full border-2 border-orange-400 p-2 rounded font-bold" onchange="updAll()"><option value="">-- Dépôt --</option><option>En-Chardon</option><option>Bachet</option><option>Jonction</option></select>
+                    <select id="a_form" class="w-full border p-2 rounded f-complete" onchange="updAll()"></select>
+                    <div class="flex gap-2"><input type="date" id="a_d1" class="border p-2 w-full" onchange="updAll()"><input type="date" id="a_d2" class="border p-2 w-full" onchange="updAll()"></div>
+                </div>
+                <div id="abtb-list" class="border p-3 rounded bg-gray-50 grid grid-cols-2 gap-1 text-xs"></div>
+            </div>
+        </div>
+        <div class="preview-box" id="pre-abtb"></div>
+        <div class="flex gap-2 mt-6 no-print">
+            <button onclick="resetAll()" class="bg-gray-500 text-white px-6 py-3 rounded font-bold uppercase text-sm">Vider</button>
+            <button onclick="window.print()" class="bg-blue-700 text-white px-6 py-3 rounded font-bold uppercase text-sm">Imprimer</button>
+            <button onclick="mailAbtb()" class="bg-[#FD5312] text-white px-6 py-3 rounded font-bold flex-1 uppercase">Générer le mail</button>
+        </div>
+    </div>
+
+    <div id="tab-vehicule" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-lg shadow no-print border-t-4 border-t-orange-500">
+            <h2 class="text-xl font-bold mb-4 uppercase text-[#FD5312]">5. Réservation Véhicule de Service</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-gray-700">Formateur responsable :</label>
+                    <select id="v_form" class="w-full border-2 border-gray-200 p-2 rounded focus:border-orange-500 outline-none f-complete" onchange="updAll()"></select>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-gray-700">Sélection du véhicule :</label>
+                    <div class="grid grid-cols-1 gap-1 bg-gray-50 p-3 rounded border text-sm">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="v_list" value="3001 - Citroën Space Tourer" onchange="updAll()"> 3001 - Citroën Space Tourer</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="v_list" value="3002 - Citroën Space Tourer" onchange="updAll()"> 3002 - Citroën Space Tourer</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="v_list" value="1070 – Mercedes Vito" onchange="updAll()"> 1070 – Mercedes Vito</label>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-gray-700">Période :</label>
+                    <div class="flex gap-2">
+                        <input type="date" id="v_d1" class="border-2 p-2 w-full rounded" onchange="updAll()">
+                        <input type="date" id="v_d2" class="border-2 p-2 w-full rounded" onchange="updAll()">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-gray-700">Horaires :</label>
+                    <div class="flex gap-2">
+                        <input type="time" id="v_h1" class="border-2 p-2 w-full rounded" onchange="updAll()">
+                        <input type="time" id="v_h2" class="border-2 p-2 w-full rounded" onchange="updAll()">
+                    </div>
+                </div>
+            </div>
+            <textarea id="v_rem" class="w-full border-2 p-2 rounded mt-4 focus:border-orange-500 outline-none" placeholder="Remarques éventuelles..." onkeyup="updAll()"></textarea>
+        </div>
+        <div class="preview-box" id="pre-vehicule"></div>
+        <div class="flex gap-2 mt-6 no-print">
+            <button onclick="resetAll()" class="bg-gray-500 text-white px-6 py-3 rounded font-bold uppercase text-sm">Vider</button>
+            <button onclick="window.print()" class="bg-blue-700 text-white px-6 py-3 rounded font-bold uppercase text-sm">Imprimer</button>
+            <button onclick="mailVehicule()" class="bg-[#FD5312] text-white px-6 py-3 rounded font-bold flex-1 uppercase">Générer le mail</button>
+        </div>
+    </div>
+
+    <div id="tab-avarie" class="tab-content hidden">
+        <div class="bg-white p-6 rounded-lg shadow no-print border-t-4 border-t-red-600">
+            <h2 class="text-xl font-bold mb-4 uppercase text-red-600">6. Annonce Avarie</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-4">
+                    <select id="av_depot" class="w-full border-2 border-red-400 p-2 rounded font-bold" onchange="updAll()"><option value="">-- Dépôt --</option><option>Bachet</option><option>En-Chardon</option><option>Jonction</option></select>
+                    <select id="av_form" class="w-full border p-2 rounded f-complete" onchange="updAll()"></select>
+                    <input type="text" id="av_veh" class="w-full border p-2 rounded" placeholder="N° Véhicule" onkeyup="updAll()">
+                    <input type="date" id="av_date" class="w-full border p-2 rounded" onchange="updAll()">
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-bold text-gray-700 italic underline">Dysfonctionnements relevés :</label>
+                    <div class="grid grid-cols-2 gap-2 bg-gray-50 p-3 rounded border text-sm">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="av_type" value="Mécanique" onchange="updAll()"> Mécanique</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="av_type" value="Électrique" onchange="updAll()"> Électrique</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="av_type" value="SA-EIV" onchange="updAll()"> SA-EIV</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="av_type" value="Portes" onchange="updAll()"> Portes</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="av_type" value="Carrosserie" onchange="updAll()"> Carrosserie</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="av_type" value="Autre" onchange="updAll()"> Autre</label>
+                    </div>
+                </div>
+            </div>
+            <textarea id="av_rem" class="w-full border p-2 rounded mt-4" placeholder="Détails complémentaires de la panne..." onkeyup="updAll()"></textarea>
+        </div>
+        <div class="preview-box" id="pre-avarie"></div>
+        <div class="flex gap-2 mt-6 no-print">
+            <button onclick="resetAll()" class="bg-gray-500 text-white px-6 py-3 rounded font-bold uppercase text-sm">Vider</button>
+            <button onclick="window.print()" class="bg-blue-700 text-white px-6 py-3 rounded font-bold uppercase text-sm">Imprimer</button>
+            <button onclick="mailAvarie()" class="bg-[#FD5312] text-white px-6 py-3 rounded font-bold flex-1 uppercase">Générer le mail</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fRestricted = ["Angelo CEPEDA", "Christian NOVERRAZ", "Fabio ALEMANNO", "Gianpiero SEBASTIANELLI", "James SCOTTON", "Jérôme CHESSEL", "José MARTIN", "José-Antonio PEREZ", "Raffaele CAIOLA"].sort();
+    const fComplet = ["Abdel Aziz AGGOUNE", "Ailton NERI DOS SANTOS JUNIOR", "Angelino RIBEIRO MONTEIRO", "Angelo CEPEDA", "Anis MENSI", "Arvid LEPPIN", "Astrid ANNEN", "Benoît THEVENIN", "Bruno CIMAROSSA", "Carlos MARTINS", "Christian NOVERRAZ", "David ABELLANEDA", "Fabio ALEMANNO", "Fitim ISENI", "Francesco DE SABATO", "Germano Antonio PEREIRA CORREIA", "Gianpiero SEBASTIANELLI", "Grégory DESPRES", "Ilyes BENTAIBA", "Jacques KRIEG", "James SCOTTON", "Jérôme CHESSEL", "José MARTIN", "José Manuel MOREIRA", "José-Antonio PEREZ", "Joseph FOTI", "Luis Fernando GARCIA DAZA", "Raffaele CAIOLA", "Stanislas RUCKEBUSCH"].sort();
+    const vehAB = ["AB Citaro", "ABA Citaro", "AB E-Bus", "ABA E-Bus", "ABAA E-Bus", "TOSA", "Hess TBA", "Hess TBAA", "ExquiCity"];
+    const MERCI = "\n\nL’équipe formation vous remercie pour votre collaboration.";
+
+    window.onload = function() {
+        document.querySelectorAll('.f-restricted').forEach(s => {
+            s.add(new Option("-- Formateur --", ""));
+            fRestricted.forEach(f => s.add(new Option(f, f)));
+        });
+        document.querySelectorAll('.f-complete').forEach(s => {
+            s.add(new Option("-- Formateur --", ""));
+            fComplet.forEach(f => s.add(new Option(f, f)));
+        });
+        const list = document.getElementById('abtb-list');
+        vehAB.forEach(v => { list.innerHTML += `<label class="flex items-center gap-1"><input type="checkbox" name="av" value="${v}" onchange="updAll()"> ${v}</label>`; });
+        updAll();
+    };
+
+    function showTab(id) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-'+id).classList.remove('hidden');
+        document.getElementById('btn-'+id).classList.add('active');
+    }
+
+    const fmt = (d) => d ? new Date(d).toLocaleDateString('fr-CH') : "___";
+    const bold = (val) => val && val !== "___" && val !== "0" ? `<b>${val}</b>` : "___";
+
+    function updAll() {
+        // 1. Cours
+        const selC = document.getElementById('c_cours').value;
+        let cIntro = "Bonjour,\ndans le cadre de nos besoins de formations, nous aimerions planifier le cours " + (selC === "Cours 600" ? "600" : "Immersion RCT") + " aux dates suivantes ?\n\n";
+        document.getElementById('pre-cours').innerHTML = `${cIntro}• Dates : du ${bold(fmt(document.getElementById('c_d1').value))} au ${bold(fmt(document.getElementById('c_d2').value))}\n• Formateur : ${bold(document.getElementById('c_form').value)}\n• Remarques : ${bold(document.getElementById('c_rem').value || "N/A")}${MERCI}`.replace(/\n/g, "<br>");
+        
+        // 2. Rails
+        let rText = `Bonjour,\n\nNous aimerions réserver les voies 4-5-6 ainsi qu’une motrice DAV 03 pour le cours rails glissants.\n\nSelon vos disponibilités.\n\nIdéalement les dates seraient entre le ${bold(fmt(document.getElementById('r_d1').value))} à 9h et le ${bold(fmt(document.getElementById('r_d2').value))}.\n\nN’hésitez pas à nous proposer d’autres dates, si celles-ci ne sont pas disponibles pour vous.\n\nRemarques :\n${bold(document.getElementById('r_rem').value || "Aucune")}\n\nPour infos et Bâtiment, les voies 4-5-6 seront libérées pour le nettoyage des voies dès 11h30.${MERCI}`;
+        document.getElementById('pre-rails').innerHTML = rText.replace(/\n/g, "<br>");
+
+        // 3. Tramway
+        const vt = Array.from(document.querySelectorAll('input[name="tv"]:checked')).map(c => c.value).join(", ") || "___";
+        document.getElementById('pre-tram').innerHTML = `Bonjour,\n\nDans le cadre de la formation, nous aurons besoin de véhicules afin d’assurer le bon déroulement des sessions prévues.\n\n• Dépôt : ${bold(document.getElementById('t_depot').value)}\n• Dates : du ${bold(fmt(document.getElementById('t_d1').value))} au ${bold(fmt(document.getElementById('t_d2').value))}\n• Formateur : ${bold(document.getElementById('t_f').value)}\n• Véhicule(s) : ${bold(vt)}${MERCI}`.replace(/\n/g, "<br>");
+
+        // 4. ABTB
+        const va = Array.from(document.querySelectorAll('input[name="av"]:checked')).map(c => c.value).join(", ") || "___";
+        document.getElementById('pre-abtb').innerHTML = `Bonjour,\n\nDans le cadre de la formation, nous aurons besoin de véhicules afin d’assurer le bon déroulement des sessions prévues.\n\n• Dépôt : ${bold(document.getElementById('a_depot').value)}\n• Dates : du ${bold(fmt(document.getElementById('a_d1').value))} au ${bold(fmt(document.getElementById('a_d2').value))}\n• Formateur : ${bold(document.getElementById('a_form').value)}\n• Modèle(s) : ${bold(va)}${MERCI}`.replace(/\n/g, "<br>");
+
+        // 5. Véhicule de Service
+        const v_veh = Array.from(document.querySelectorAll('input[name="v_list"]:checked')).map(c => c.value).join(", ") || "___";
+        document.getElementById('pre-vehicule').innerHTML = `Bonjour,\n\nDemande de réservation de véhicule de service :\n\n• Formateur : ${bold(document.getElementById('v_form').value)}\n• Véhicule(s) : ${bold(v_veh)}\n• Dates : du ${bold(fmt(document.getElementById('v_d1').value))} au ${bold(fmt(document.getElementById('v_d2').value))}\n• Horaires : de ${bold(document.getElementById('v_h1').value)} à ${bold(document.getElementById('v_h2').value)}\n• Remarques : ${bold(document.getElementById('v_rem').value || "Aucune")}${MERCI}`.replace(/\n/g, "<br>");
+
+        // 6. Avarie
+        const av_type = Array.from(document.querySelectorAll('input[name="av_type"]:checked')).map(c => c.value).join(", ") || "___";
+        document.getElementById('pre-avarie').innerHTML = `Bonjour,\n\nNous vous informons qu’une avarie a été constatée sur le véhicule ci-dessous.\n\n• Dépôt : ${bold(document.getElementById('av_depot').value)}\n• Véhicule : ${bold(document.getElementById('av_veh').value)}\n• Date : ${bold(fmt(document.getElementById('av_date').value))}\n• Formateur : ${bold(document.getElementById('av_form').value)}\n\nDysfonctionnements : ${bold(av_type)}\n\nDétails : ${bold(document.getElementById('av_rem').value || "N/A")}${MERCI}`.replace(/\n/g, "<br>");
+    }
+
+    function mailCours() {
+        const c = document.getElementById('c_cours').value;
+        const to = (c === "Cours 600") ? "Dias.Celso@tpg.ch" : "GTR-Planification@tpg.ch";
+        window.location.href = `mailto:${to}?subject=Planification ${c}&body=${encodeURIComponent(document.getElementById('pre-cours').innerText)}`;
+    }
+
+    function mailRails() {
+        window.location.href = `mailto:vondach.baptiste@tpg.ch;Resp.equipesCMB2@tpg.ch;PERROUD.S@tpg.ch;batiments@tpg.ch?cc=varidel.loic@tpg.ch&subject=Rails Glissants&body=${encodeURIComponent(document.getElementById('pre-rails').innerText)}`;
+    }
+
+    function mailTram() {
+        const d = document.getElementById('t_depot').value; if(!d) return alert("Dépôt ?");
+        const to = "linares.david@tpg.ch;" + (d === "En-Chardon" ? "Resp.equipesCMC@tpg.ch;Equipes_Planification_CMC@tpg.ch;meyer.david@tpg.ch" : "Resp.equipesCMB2@tpg.ch;Equipes_Planification_CMB@tpg.ch");
+        const cc = "perroud.stephane@tpg.ch;varidel.loic@tpg.ch;" + (d === "En-Chardon" ? "gueninchault.romain@tpg.ch" : "meyer.david@tpg.ch");
+        window.location.href = `mailto:${to}?cc=${cc}&subject=Tramway ${d}&body=${encodeURIComponent(document.getElementById('pre-tram').innerText)}`;
+    }
+
+    function mailAbtb() {
+        const d = document.getElementById('a_depot').value; if(!d) return alert("Dépôt ?");
+        let to = ""; let cc = `perroud.stephane@tpg.ch;varidel.loic@tpg.ch;meyer.david@tpg.ch;`;
+        if(d === "En-Chardon") { to = "Resp.equipesCMC@tpg.ch;Equipes_Planification_CMC@tpg.ch"; cc += "gueninchault.romain@tpg.ch"; }
+        else if(d === "Bachet") { to = "Resp.equipesCMB2@tpg.ch;Equipes_Planification_CMB@tpg.ch"; cc += "Faucherre.Luc@tpg.ch"; }
+        else { to = "Resp.equipesCMJ2@tpg.ch;Equipes_Planification_CMJ@tpg.ch"; cc += "marino.fausto@tpg.ch"; }
+        window.location.href = `mailto:${to}?cc=${cc}&subject=AB/TB ${d}&body=${encodeURIComponent(document.getElementById('pre-abtb').innerText)}`;
+    }
+
+    function mailVehicule() {
+        window.location.href = `mailto:GTR-Planification@tpg.ch?subject=Réservation Véhicule de Service&body=${encodeURIComponent(document.getElementById('pre-vehicule').innerText)}`;
+    }
+
+    function mailAvarie() {
+        const d = document.getElementById('av_depot').value; if(!d) return alert("Dépôt ?");
+        const to = d === "Bachet" ? "Resp.equipesCMB2@tpg.ch" : (d === "En-Chardon" ? "Resp.equipesCMC@tpg.ch" : "Resp.equipesCMJ2@tpg.ch");
+        window.location.href = `mailto:${to}?cc=delsinne.laurent@tpg.ch&subject=Avarie ${d}&body=${encodeURIComponent(document.getElementById('pre-avarie').innerText)}`;
+    }
+
+    function resetAll() {
+        document.querySelectorAll('input, select, textarea').forEach(e => { if(e.type==='checkbox') e.checked=false; else e.value=""; });
+        updAll();
+    }
+</script>
+</body>
+</html>
